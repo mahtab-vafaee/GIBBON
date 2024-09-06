@@ -55,19 +55,36 @@ zMin=0+phaseShift(3);
 zMax=zMin+2*pi*numPeriods(3);
 
 %Create coordinates
-xRange=linspace(xMin,xMax,Ns);
-yRange=linspace(yMin,yMax,Ns);
-zRange=linspace(zMin,zMax,Ns);
-[X,Y,Z]=meshgrid(xRange,yRange,zRange);
+switch length(Ns)
+    case 1
+        xRange=linspace(xMin,xMax,Ns);
+        yRange=linspace(yMin,yMax,Ns);
+        zRange=linspace(zMin,zMax,Ns);
+        [X,Y,Z]=meshgrid(xRange,yRange,zRange);
+
+    case 3
+        xRange=linspace(xMin,xMax,Ns(1));
+        yRange=linspace(yMin,yMax,Ns(2));
+        zRange=linspace(zMin,zMax,Ns(3));
+        [X,Y,Z]=meshgrid(xRange,yRange,zRange);
+end
 
 %Calculate 3D image data
 S=triplyPeriodicMinimal(X(:),Y(:),Z(:),surfaceCase);        
 S=reshape(S,size(X));
 
 %Scaling coordinates
-X=((X./abs(xMax-xMin)).*L);
-Y=((Y./abs(yMax-yMin)).*L);
-Z=((Z./abs(zMax-zMin)).*L);
+switch length(L)
+    case 1
+        X=((X./abs(xMax-xMin)).*L);
+        Y=((Y./abs(yMax-yMin)).*L);
+        Z=((Z./abs(zMax-zMin)).*L);
+
+    case 3
+        X=((X./abs(xMax-xMin)).*L(1,1));
+        Y=((Y./abs(yMax-yMin)).*L(1,2));
+        Z=((Z./abs(zMax-zMin)).*L(1,3));
+end
 
 %% Generation of level sets and exporting
 
